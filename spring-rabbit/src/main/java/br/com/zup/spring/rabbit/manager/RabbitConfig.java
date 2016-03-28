@@ -7,10 +7,12 @@ import java.util.concurrent.TimeoutException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource(ignoreResourceNotFound = false, value = {"classpath:rabbit.properties"})
+@ImportResource(locations = {"classpath:rabbit-context.xml"})
 public class RabbitConfig {
 
     @Value("${rabbitmq.host}")
