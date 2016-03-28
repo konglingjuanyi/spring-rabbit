@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>br.com.zup.spring</groupId>
-	<artifactId>rabbit-spring</artifactId>
+	<artifactId>spring-rabbit</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>rabbit-commons</name>
+	<name>spring-rabbit</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
