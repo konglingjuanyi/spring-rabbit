@@ -8,7 +8,9 @@ import br.com.zup.spring.rabbit.infra.QMessage;
 
 public interface QueueConsumer<T extends QMessage> {
 
-    void consume(Consumer<T> successCallback, boolean requeueWhenFailure);
+    void consumeSync(Consumer<T> successCallback, boolean requeueWhenFailure);
+    
+    void consumeAsync(Consumer<T> successCallback, boolean requeueWhenFailure);
 
     void setMessageConverter(MessageConverter<T> messageConverter);
 }
