@@ -36,7 +36,7 @@ public final class RabbitQueueConsumer<T extends QMessage>
 		this.queue = queue;
 	}
 
-	public void consumeSync(java.util.function.Consumer<T> successCallback,
+	public void sync(java.util.function.Consumer<T> successCallback,
 			boolean requeueWhenFailure) {
 		Channel channel = rabbitManager.createChannelForConsumer(1);
 		final Consumer consumer = new DefaultConsumer(channel) {
@@ -62,33 +62,36 @@ public final class RabbitQueueConsumer<T extends QMessage>
 		rabbitManager.bindConsumer(channel, consumer, queue);
 	}
 
-	public void consumeAsync(java.util.function.Consumer<T> successCallback, boolean requeueWhenFailure) {
+	public void async(java.util.function.Consumer<T> successCallback, boolean requeueWhenFailure) {
         Channel channel = rabbitManager.createChannelForConsumer(UNLIMITED_MESSAGES_CONFIG);
         final Consumer consumer = new DefaultConsumer(channel) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
                     byte[] body) throws IOException {
             	LOG.info("Handle Async message");
+            	
             	CompletableFuture<Object> executionResult = CompletableFuture.supplyAsync(() -> {
             	    return (JsonMessage) messageConverter.convert(body);
             	}).thenCompose((f) -> CompletableFuture.supplyAsync(() ->  {
 					return processMessage(f, successCallback);
                 }));
             	
-				executionResult.whenComplete((res, throwable) -> {
-					try {
-						if (throwable != null) {
-							channel.basicNack(envelope.getDeliveryTag(), false,
-									requeueWhenFailure);
-						} else {
-							channel.basicAck(envelope.getDeliveryTag(), false);
-						}
-					} catch (IOException e) {
-						throw new UncheckedIOException(e);
-					} catch (Exception e) {
-						LOG.error("Queue Consumer Callback error", e);
+				executionResult.whenComplete((res, throwable) -> handleResult(res, throwable, channel, envelope));
+            }
+            
+            private void handleResult(Object res, Throwable throwable, Channel channel, Envelope envelope) {
+            	try {
+					if (throwable != null) {
+						channel.basicNack(envelope.getDeliveryTag(), false,
+								requeueWhenFailure);
+					} else {
+						channel.basicAck(envelope.getDeliveryTag(), false);
 					}
-				});
+				} catch (IOException e) {
+					throw new UncheckedIOException(e);
+				} catch (Exception e) {
+					LOG.error("Queue Consumer channel Ack error", e);
+				}
             }
             
             @SuppressWarnings("unchecked")
