@@ -68,15 +68,18 @@ public final class RabbitQueueConsumer<T extends QMessage>
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
                     byte[] body) throws IOException {
-            	LOG.info("Handle Async message");
-            	
             	CompletableFuture<Object> executionResult = CompletableFuture.supplyAsync(() -> {
-            	    return (JsonMessage) messageConverter.convert(body);
+            	    return convertMessageBody(body);
             	}).thenCompose((f) -> CompletableFuture.supplyAsync(() ->  {
 					return processMessage(f, successCallback);
                 }));
             	
 				executionResult.whenComplete((res, throwable) -> handleResult(res, throwable, channel, envelope));
+            }
+            
+            private JsonMessage convertMessageBody(byte[] body) {
+            	LOG.debug("Handling Async message");
+            	return (JsonMessage) messageConverter.convert(body);
             }
             
             private void handleResult(Object res, Throwable throwable, Channel channel, Envelope envelope) {
