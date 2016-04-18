@@ -39,6 +39,7 @@ public class RabbitConfig {
         factory.setVirtualHost(virtualHost);
         factory.setUsername(user);
         factory.setPassword(password);
+        factory.setAutomaticRecoveryEnabled(true);
         return factory;
     }
 
