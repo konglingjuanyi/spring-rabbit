@@ -4,7 +4,7 @@
 
     <groupId>br.com.zup.spring</groupId>
     <artifactId>spring-rabbit</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>spring-rabbit</name>
