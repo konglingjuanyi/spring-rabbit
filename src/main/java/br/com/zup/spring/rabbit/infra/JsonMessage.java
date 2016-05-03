@@ -15,36 +15,31 @@ public class JsonMessage implements QMessage {
 	private String payload;
 
 	public JsonMessage(String payload) {
-
 		this.payload = payload;
 	}
 
 	public JsonMessage(Object pojo) {
-	    try {
+		try {
 			this.payload = MAPPER.writeValueAsString(pojo);
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-    }
+	}
 
 	public JsonMessage(byte[] body) {
-
 		this.payload = new String(body, DEFAULT_CHARSET);
 	}
 
 	public String getPayload() {
-
 		return payload;
 	}
 
 	public byte[] getBody() {
-
 		return payload.getBytes(DEFAULT_CHARSET);
 	}
 
 	@Override
 	public String toString() {
-
 		return payload;
 	}
 }

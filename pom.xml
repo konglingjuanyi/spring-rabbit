@@ -4,7 +4,7 @@
 
     <groupId>br.com.zup.spring</groupId>
     <artifactId>spring-rabbit</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
     <name>spring-rabbit</name>
@@ -15,7 +15,7 @@
         <project.build.java>1.8</project.build.java>
         <spring.version>4.2.5.RELEASE</spring.version>
         <rabbbit.version>3.6.1</rabbbit.version>
-        <log4j2.version>2.5</log4j2.version>
+        <log4j2.version>2.4.1</log4j2.version>
     </properties>
 
     <repositories>
